@@ -7,7 +7,7 @@ class Course(models.Model):
     instructor = models.CharField(max_length=200)
     description = models.TextField()
     url = models.URLField(max_length=500)
-    price = models.DecimalField(max_digits=8, decimal_places=2)
+    price = models.CharField(max_length=100)
     rating = models.DecimalField(max_digits=3, decimal_places=2, null=True, blank=True)
     thumbnail_url = models.URLField(max_length=500, null=True, blank=True)
     is_package = models.BooleanField(default=False)
