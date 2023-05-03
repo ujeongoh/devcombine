@@ -13,12 +13,29 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 -->
+{% comment %}
+=======================================================
+4팀 1조 퍼블리싱 참고 사항
+=======================================================
+* base.html 사용 방법
+* 퍼블리싱을 희망하는 공간에 {% extends 'base.html' %} 로 base.html 파일을 import 한다.
+* css와 static 파일에 있는 라이브러리가 필요하면, {% load static %} 로 load 한다.
+* {% block content %}{% endblock %} 으로 content를 변환한다. (메인 페이지 & 상세 페이지)
+* base.html 뼈대가 필요하지 않은 경우에는 분리된 html 파일을 extends 하여 가공하면 됩니다.
+
+* head.html : html에 참조되는 head (font, event .. )
+* navbar.html : sign in 부분의 header 부분
+* sidebar.html : 사이드 바 -> filter 지정 예정
+* footer : footer (하단에 블로그, 라이센스 등등)
+* eventfooter : javascript event footer
+{% endcomment %}
+
 
 <!DOCTYPE html>
 <html lang = "ko">
 {% include 'head.html' %}
 <body class="g-sidenav-show   bg-gray-100">
-    {% include 'sidebar.html' %}
+    <div class="min-height-100 bg-primary position-absolute w-100"></div>
     <main class="main-content position-relative border-radius-lg ">
         {% include 'navbar.html' %}
         <hr>
