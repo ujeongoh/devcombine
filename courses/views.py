@@ -5,6 +5,7 @@ from django.http import HttpResponse
 def index(request):
     return render(request, 'courses/index.html')
 
+
 def series_detail(request, series_id):
-    
+
     return render(request, 'courses/detail.html')
