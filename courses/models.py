@@ -1,6 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+class Tag(models.Model):
+    name = models.CharField(max_length=200)
+    def __str__(self):
+        return self.name
 
 class Course(models.Model):
     title = models.CharField(max_length=300)
@@ -15,22 +19,15 @@ class Course(models.Model):
     is_free = models.BooleanField(default=False)
     enrollment_count = models.IntegerField(default=0)
     upload_date = models.DateField(auto_now_add=False, null=True)
-
+    tags = models.ManyToManyField(Tag)
+    likes = models.ManyToManyField(User, related_name='liked_courses')
+    dislikes = models.ManyToManyField(User, related_name='disliked_courses')
     def __str__(self):
         return self.title
 
-
-class Tag(models.Model):
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    name = models.CharField(max_length=200)
-
-    def __str__(self):
-        return self.name
-
-
 class UserCourse(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    interests = models.ManyToManyField(Course, related_name='interested_users')
     start_date = models.DateField(auto_now_add=False, null=True)
     end_date = models.DateField(auto_now_add=False, null=True)
 
