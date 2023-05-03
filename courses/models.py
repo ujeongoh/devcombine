@@ -44,13 +44,14 @@ class UserCourse(models.Model):
 class Series(models.Model):
     title = models.CharField(max_length=300)
     subtitle = models.CharField(max_length=300)
+    tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
     
     def __str__(self):
         return self.title
 
 class SeriesCourse(models.Model):
-    series = models.ForeignKey(Series, on_delete=models.CASCADE)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    series = models.ForeignKey(Series, on_delete=models.CASCADE)        # series 항목
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)        # 어떤 강의 인지
 
     class Meta:
         unique_together = ('series', 'course')
