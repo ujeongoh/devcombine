@@ -25,14 +25,14 @@ class Course(models.Model):
     def __str__(self):
         return self.title
 
-class UserCourse(models.Model):
+class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     interests = models.ManyToManyField(Course, related_name='interested_users')
     start_date = models.DateField(auto_now_add=False, null=True)
     end_date = models.DateField(auto_now_add=False, null=True)
 
-    class Meta:
-        unique_together = ('user', 'course')
+    # class Meta:
+    #     unique_together = ('user', 'course')
 
     def __str__(self):
         return f'{self.user.username} - {self.course.title}'
