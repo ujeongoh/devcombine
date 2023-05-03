@@ -12,7 +12,7 @@ class Course(models.Model):
     description = models.TextField()
     site = models.CharField(max_length=400)
     url = models.URLField(max_length=500)
-    price = models.CharField(max_length=100)
+    price = models.DecimalField(max_digits=8, decimal_places=2)
     rating = models.DecimalField(max_digits=3, decimal_places=2, null=True, blank=True)
     thumbnail_url = models.URLField(max_length=500, null=True, blank=True)
     is_package = models.BooleanField(default=False)
@@ -41,7 +41,7 @@ class UserCourse(models.Model):
 class Series(models.Model):
     title = models.CharField(max_length=300)
     subtitle = models.CharField(max_length=300)
-    tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
+    tags = models.ManyToManyField(Tag)
     
     def __str__(self):
         return self.title
@@ -49,9 +49,11 @@ class Series(models.Model):
 class SeriesCourse(models.Model):
     series = models.ForeignKey(Series, on_delete=models.CASCADE)        # series 항목
     course = models.ForeignKey(Course, on_delete=models.CASCADE)        # 어떤 강의 인지
+    is_main = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ('series', 'course')
 
     def __str__(self):
         return f'{self.series.title} - {self.course.title}'
+
