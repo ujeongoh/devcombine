@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from .forms import CustomUserCreationForm
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
 from .models import Course, UserProfile
 from rest_framework import permissions
@@ -12,6 +12,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import MyTokenObtainPairSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.middleware.csrf import get_token
+from django.urls import reverse
 
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
@@ -28,10 +29,7 @@ def signup_view(request):
             user = form.save()
             UserProfile.objects.create(user=user)
             login(request, user)
-            return JsonResponse({
-                'message': '회원가입이 성공적으로 완료되었습니다.',
-                'user_id': user.id
-            })
+            return HttpResponseRedirect(reverse('courses:index'))
         else:
 
             return JsonResponse({'error': 'Invalid request.'}, status=400)
@@ -48,11 +46,7 @@ def login_view(request):
             login(request, user)
             refresh = RefreshToken.for_user(user)
             access_token = str(refresh.access_token)
-            return JsonResponse({
-                'message': '로그인이 성공적으로 완료되었습니다.',
-                'user_id': user.id,
-                'access_token': access_token,
-            })
+            return HttpResponseRedirect(reverse('courses:index'))
         else:
             return JsonResponse({'error': 'Invalid credentials.'}, status=401)
     else:
@@ -62,7 +56,7 @@ def login_view(request):
 @csrf_exempt
 def logout_view(request):
     logout(request)
-    return JsonResponse({'message': '로그아웃이 성공적으로 완료되었습니다.'})
+    return HttpResponseRedirect(reverse('courses:index'))
 
 
 def index(request):
