@@ -1,18 +1,19 @@
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
-from .forms import CustomUserCreationForm
+from .forms import CustomUserCreationForm, CSVUploadForm
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-from .models import Course, UserProfile
+from .models import Course, UserProfile, Tag
 from rest_framework import permissions
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import MyTokenObtainPairSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.middleware.csrf import get_token
-
+import csv
+from io import TextIOWrapper
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
@@ -147,3 +148,51 @@ def user_wishlist(request):
         return JsonResponse(wishlist, safe=False)
     else:
         return JsonResponse({'error': 'Invalid request.'}, status=400)
+
+def upload_csv(request):
+    if request.method == 'POST':
+        form = CSVUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            # CSV 파일을 읽기 모드로 열기
+            csv_file = TextIOWrapper(request.FILES['csv_file'].file, encoding='utf-8')
+            # CSV 파일 파싱하여 Course 모델에 저장
+            reader = csv.reader(csv_file)
+            next(reader)  # CSV 헤더를 건너뛰기
+            for row in reader:
+                title = row[0]
+                instructor = row[1]
+                description = row[2]
+                site = row[3]
+                url = row[4]
+                price = row[5]
+                rating = row[6]
+                thumbnail_url = row[7]
+                is_package = row[8]
+                is_free = row[9]
+                enrollment_count = row[10]
+                upload_date = row[11]
+                tags = row[12]
+
+                # Course 모델에 데이터 저장
+                course = Course.objects.create(
+                    title=title,
+                    instructor=instructor,
+                    description=description,
+                    site=site,
+                    url=url,
+                    price=price,
+                    rating=rating,
+                    thumbnail_url=thumbnail_url,
+                    is_package=is_package,
+                    is_free=is_free,
+                    enrollment_count=enrollment_count,
+                    upload_date=upload_date,
+                )
+                for tag_name in tags.split(','):
+                    tag, _ = Tag.objects.get_or_create(name=tag_name.strip())
+                    course.tags.add(tag)
+
+            return render(request, 'admin/upload_success.html')
+    else:
+        form = CSVUploadForm()
+    return render(request, 'admin/upload.html', {'form': form})

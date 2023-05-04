@@ -1,0 +1,9 @@
+{% extends "admin/base.html" %}
+{% block content %}
+  <h1>Upload CSV File</h1>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="file" name="csv_file">
+    <button type="submit">Upload</button>
+  </form>
+{% endblock %}
