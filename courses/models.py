@@ -31,11 +31,8 @@ class UserProfile(models.Model):
     start_date = models.DateField(auto_now_add=False, null=True)
     end_date = models.DateField(auto_now_add=False, null=True)
 
-    # class Meta:
-    #     unique_together = ('user', 'course')
-
-    def __str__(self):
-        return f'{self.user.username} - {self.course.title}'
+#    def __str__(self):
+#        return f'{self.user.username} - {self.interests.title}'
 
 
 class Series(models.Model):
