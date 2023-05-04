@@ -17,10 +17,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from courses import views
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('signup', views.signup_view, name='signup'),
     path('login', views.login_view, name='login'),
     path('logout', views.logout_view, name='logout'),
     path('courses/', include('courses.urls')),
+    path('get-csrf-token/', views.get_csrf_token, name='get_csrf_token'),
 ]
