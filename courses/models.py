@@ -23,12 +23,21 @@ class Course(models.Model):
     is_free = models.BooleanField(default=False)
     enrollment_count = models.IntegerField(default=0)
     # upload_date = models.DateField(auto_now_add=False, null=True)
-    tags = models.ManyToManyField(Tag)
+
+    # TAG
+    tags = models.ManyToManyField(Tag, through='CourseTag')
+    #
     likes = models.ManyToManyField(User, related_name='liked_courses')
     dislikes = models.ManyToManyField(User, related_name='disliked_courses')
 
     def __str__(self):
         return self.title
+
+
+class CourseTag(models.Model):
+    # CourseTag - Course : Tag
+    tag_id = models.ForeignKey(Tag, on_delete=models.CASCADE)
+    course_id = models.ForeignKey(Course, on_delete=models.CASCADE)
 
 
 class UserProfile(models.Model):
@@ -44,21 +53,13 @@ class UserProfile(models.Model):
 class Series(models.Model):
     title = models.CharField(max_length=300)
     subtitle = models.CharField(max_length=300)
-    tags = models.ManyToManyField(Tag)
+    tags = models.ManyToManyField(Tag, through='SeriesTag')
 
     def __str__(self):
         return self.title
 
 
-class SeriesCourse(models.Model):
-    series = models.ForeignKey(
-        Series, on_delete=models.CASCADE)        # series 항목
-    course = models.ForeignKey(
-        Course, on_delete=models.CASCADE)        # 어떤 강의 인지
-    is_main = models.BooleanField(default=False)
-
-    class Meta:
-        unique_together = ('series', 'course')
-
-    def __str__(self):
-        return f'{self.series.title} - {self.course.title}'
+class SeriesTag(models.Model):
+    # Series:Tag = 1:ㅡ
+    tag_id = models.ForeignKey(Tag, on_delete=models.CASCADE)
+    series_id = models.ForeignKey(Series, on_delete=models.CASCADE)
