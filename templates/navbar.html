@@ -4,6 +4,7 @@
 <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl " id="navbarBlur" data-scroll="false">
     <div class="container py-1 px-3">
       <div class="col-2">
+        <a href ={% url 'courses:index' %}>
         <img src="{% static 'img/logo_blue.png' %}" class="border-radius-xl" width=250 />
       </div>
       <nav aria-label="breadcrumb">
@@ -21,12 +22,27 @@
           </div>
         </div>
         <ul class="navbar-nav  justify-content-end">
-          <li class="nav-item d-flex align-items-center">
+          {% if user.is_authenticated %} 
+          <li class="nav-item d-flex align-items-center" style="padding-right: 20px">
             <a href="javascript:;" class="nav-link text-white font-weight-bold px-0">
               <i class="fa fa-user me-sm-1"></i>
-              <span class="d-sm-inline d-none">Sign In</span>
+              <span class="d-sm-inline d-none"><a href="{% url 'logout' %}"><b>{{user.username}}</b>님 Sign Out</a></span>
             </a>
           </li>
+          {% else %}
+          <li class="nav-item d-flex align-items-center" style="padding-right: 20px">
+            <a href="javascript:;" class="nav-link text-white font-weight-bold px-0">
+              <i class="fa fa-user me-sm-1"></i>
+              <span class="d-sm-inline d-none"><a href="{% url 'signup' %}">Sign Up</a></span>
+            </a>
+          </li>
+          <li class="nav-item d-flex align-items-center" style="padding-right: 20px">
+            <a href="javascript:;" class="nav-link text-white font-weight-bold px-0">
+              <i class="fa fa-user me-sm-1"></i>
+              <span class="d-sm-inline d-none"><a href="{% url 'login' %}">Sign In</a></span>
+            </a>
+          </li>
+          {% endif %}
         </ul>
       </div>
     </div>
