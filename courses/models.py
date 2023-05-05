@@ -30,9 +30,8 @@ class UserProfile(models.Model):
     interests = models.ManyToManyField(Course, related_name='interested_users')
     start_date = models.DateField(auto_now_add=False, null=True)
     end_date = models.DateField(auto_now_add=False, null=True)
-
-#    def __str__(self):
-#        return f'{self.user.username} - {self.interests.title}'
+    def __str__(self):
+        return self.user.username
 
 
 class Series(models.Model):
