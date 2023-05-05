@@ -126,7 +126,7 @@ def check_course_like(request, course_id):
     else:
         return JsonResponse({'error': 'Invalid request.'}, status=400)
 
-# todo 작동 안함
+#TODO 이유는 모르겠지만 빈 wishlist반환됨.
 @csrf_exempt
 @api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
@@ -144,6 +144,14 @@ def user_wishlist(request):
                     'course_name': interest.title,
                 }
             })
-        return JsonResponse(wishlist, safe=False)
+        return JsonResponse({'wishlist': wishlist}, status=200)
     else:
         return JsonResponse({'error': 'Invalid request.'}, status=400)
+
+@csrf_exempt
+@api_view(['GET'])
+@permission_classes([permissions.IsAuthenticated])
+def course_like_count(request, course_id):
+    course = Course.objects.get(id=course_id)
+    count = course.likes.count()
+    return JsonResponse({'like_count': count})
