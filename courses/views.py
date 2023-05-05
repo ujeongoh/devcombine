@@ -17,6 +17,7 @@ from io import TextIOWrapper
 from django.urls import reverse
 from datetime import datetime
 from decimal import Decimal, InvalidOperation
+from django.forms.models import model_to_dict
 
 
 class MyTokenObtainPairView(TokenObtainPairView):
@@ -80,6 +81,24 @@ def series_detail(request, series_id):
     """
 
     return render(request, 'courses/detail.html')
+
+def all_courses(request):
+
+    """
+    전체 코스 조회, 필터링 기능
+    """
+    course_info_list =[]
+
+    all_courses = Course.objects.all()
+    for course in all_courses:
+        course_info = model_to_dict(course) # 객체 import
+        course_info_list.append(course_info)
+    context = {
+        'all_courses': course_info_list
+        }
+    # print(context)
+    return render(request, 'courses/all_courses.html', context)
+    
 
 @csrf_exempt
 @api_view(['POST'])
