@@ -15,6 +15,8 @@ from django.middleware.csrf import get_token
 import csv
 from io import TextIOWrapper
 from django.urls import reverse
+from datetime import datetime
+from decimal import Decimal, InvalidOperation
 
 
 class MyTokenObtainPairView(TokenObtainPairView):
@@ -154,20 +156,34 @@ def upload_csv(request):
             # CSV 파일 파싱하여 Course 모델에 저장
             reader = csv.reader(csv_file)
             next(reader)  # CSV 헤더를 건너뛰기
+            now = datetime.now().date()
             for row in reader:
-                title = row[0]
-                instructor = row[1]
-                description = row[2]
-                site = row[3]
+                site = row[0]
+                title = row[1]
+                instructor = row[2]
+                description = row[3]
                 url = row[4]
-                price = row[5]
-                rating = row[6]
-                thumbnail_url = row[7]
-                is_package = row[8]
-                is_free = row[9]
-                enrollment_count = row[10]
-                upload_date = row[11]
-                tags = row[12]
+                try:
+                    price = Decimal(row[5])
+                except InvalidOperation:
+                    price = Decimal('0.00')
+                tags = row[6]
+                rating = row[7]
+                try:
+                    rating = round(Decimal(row[7]), 3)
+                except InvalidOperation:
+                    rating = Decimal('0.000')
+                thumbnail_url = row[8]
+                is_package = bool(row[9])
+                is_free = bool(row[10])
+                enrollment_count_str = row[11]
+                if enrollment_count_str == "" or enrollment_count_str == "0.0":
+                    enrollment_count = 0
+                else:
+                    enrollment_count = int(float(enrollment_count_str))
+
+
+                upload_date = now
 
                 # Course 모델에 데이터 저장
                 course = Course.objects.create(
