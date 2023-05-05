@@ -17,7 +17,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from account.models import UserProfile
 from courses.models import Course, Tag
 from .serializers import MyTokenObtainPairSerializer
-from .forms import CustomUserCreationForm, CSVUploadForm
+from .forms import CustomUserCreationForm
 
 import csv
 from io import TextIOWrapper
@@ -157,64 +157,16 @@ def check_course_like(request, course_id):
 #     return JsonResponse({'like_count': count})
 
 
-def upload_csv(request):
-    if request.method == 'POST':
-        form = CSVUploadForm(request.POST, request.FILES)
-        if form.is_valid():
-            # CSV 파일을 읽기 모드로 열기
-            csv_file = TextIOWrapper(
-                request.FILES['csv_file'].file, encoding='utf-8')
-            # CSV 파일 파싱하여 Course 모델에 저장
-            reader = csv.reader(csv_file)
-            next(reader)  # CSV 헤더를 건너뛰기
-            now = datetime.now().date()
-            for row in reader:
-                site = row[0]
-                title = row[1]
-                instructor = row[2]
-                description = row[3]
-                url = row[4]
-                try:
-                    price = Decimal(row[5])
-                except InvalidOperation:
-                    price = Decimal('0.00')
-                tags = row[6]
-                rating = row[7]
-                try:
-                    rating = round(Decimal(row[7]), 3)
-                except InvalidOperation:
-                    rating = Decimal('0.000')
-                thumbnail_url = row[8]
-                is_package = bool(row[9])
-                is_free = bool(row[10])
-                enrollment_count_str = row[11]
-                if enrollment_count_str == "" or enrollment_count_str == "0.0":
-                    enrollment_count = 0
-                else:
-                    enrollment_count = int(float(enrollment_count_str))
 
-                upload_date = now
 
-                # Course 모델에 데이터 저장
-                course = Course.objects.create(
-                    title=title,
-                    instructor=instructor,
-                    description=description,
-                    site=site,
-                    url=url,
-                    price=price,
-                    rating=rating,
-                    thumbnail_url=thumbnail_url,
-                    is_package=is_package,
-                    is_free=is_free,
-                    enrollment_count=enrollment_count,
-                    # upload_date=upload_date,
-                )
-                for tag_name in tags.split(','):
-                    tag, _ = Tag.objects.get_or_create(name=tag_name.strip())
-                    course.tags.add(tag)
-
-            return render(request, 'admin/upload_success.html')
+def upload_csv_view(request):
+    if request.method == 'POST' and request.FILES:
+        csv_file = request.FILES['csv_file']
+        # CSV 파일 처리 코드 작성
+        reader = csv.reader(csv_file)
+        for row in reader:
+            title = row[1]
+            # 각 행에 대한 처리 코드 작성
+        return render(request, 'admin/upload_csv_success.html')
     else:
-        form = CSVUploadForm()
-    return render(request, 'admin/upload.html', {'form': form})
+        return render(request, 'admin/upload_csv_form.html')
