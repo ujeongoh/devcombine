@@ -18,18 +18,19 @@ def total_course(request):
     """
     전체 코스 조회, 필터링 기능
     """
-    # TODO :: Tag 기준 필터링 기능 개발 필요
+    selected_tag_ids = request.GET.getlist('tags')
+    selected_tags = [int(tag_id) for tag_id in selected_tag_ids]
+    if selected_tags:
+        total_course = Course.objects.filter(tags__id__in=selected_tags).distinct()
+    else:
+        total_course = Course.objects.all()
 
-    course_info_list = []
-
-    total_course = Course.objects.all()[:10]  # 임시로 10개만
-
-    for course in total_course:
-        course_info = model_to_dict(course)  # 객체 import
-        course_info_list.append(course_info)
+    all_tags = Tag.objects.all()[:10] #todo::몇개를 하는게 좋을까요?
 
     context = {
-        'total_course': course_info_list
+        'total_course': total_course,
+        'all_tags': all_tags,
+        'selected_tags': selected_tags,
     }
 
     return render(request, 'courses/index.html', context)
