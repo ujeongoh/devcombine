@@ -2,7 +2,7 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
 
-from courses.models import Tag
+from courses.models import Course, Tag
 
 
 class Series(models.Model):
@@ -20,6 +20,10 @@ class Series(models.Model):
 
     def __str__(self):
         return self.title
+
+    def courses(self):
+        course_tags = self.seriestag_set.values_list('tag_id', flat = True) # Series 객체와 연결된 Tag ID 목록 가져오기
+        return Course.objects.filter(tags__in = course_tags).distinct()
 
 
 class SeriesTag(models.Model):
