@@ -1,9 +1,16 @@
+{% extends 'base_index.html' %}
+{% load static %}
+{% block content %}
 {% if main_series %}
+<div class="container-fluid py-4">
 <ul>
     {% for series in main_series %}
+    <div class="row">
+        <h1>{{series.title}}</h1>
+    </div>
         <li>
             {% comment %} <a href = "{% url 'series_course' series.id %}"> {% endcomment %}
-                {{series.title}}
+                
             {% comment %} </a> {% endcomment %}
             <ul>
                 {% comment %} {% comment %} {% for course in series.courses.all %}
@@ -17,3 +24,4 @@
 {% else %}
 <p>no series</p>
 {% endif %}
+{% endblock %}
