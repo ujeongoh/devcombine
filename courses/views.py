@@ -36,7 +36,7 @@ def total_course(request):
         'selected_tags': selected_tags,
     }
 
-    return render(request, 'courses/index.html', context)
+    return render(request, 'courses/index copy.html', context)
 
 
 def upload_csv(request):
