@@ -22,44 +22,17 @@ class Course(models.Model):
     is_package = models.BooleanField(default=False)
     is_free = models.BooleanField(default=False)
     enrollment_count = models.IntegerField(default=0)
-    # upload_date = models.DateField(auto_now_add=False, null=True)
-
-    # TAG
-    tags = models.ManyToManyField(Tag, through='CourseTag')
-    #
     likes = models.ManyToManyField(User, related_name='liked_courses')
     dislikes = models.ManyToManyField(User, related_name='disliked_courses')
+
+    # Course:Tag - N:M
+    tags = models.ManyToManyField(Tag, through='CourseTag')
 
     def __str__(self):
         return self.title
 
 
 class CourseTag(models.Model):
-    # CourseTag - Course : Tag
+    # Course : Tag - N:M
     tag_id = models.ForeignKey(Tag, on_delete=models.CASCADE)
     course_id = models.ForeignKey(Course, on_delete=models.CASCADE)
-
-
-class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    interests = models.ManyToManyField(Course, related_name='interested_users')
-    start_date = models.DateField(auto_now_add=False, null=True)
-    end_date = models.DateField(auto_now_add=False, null=True)
-
-    def __str__(self):
-        return self.user.username
-
-
-class Series(models.Model):
-    title = models.CharField(max_length=300)
-    subtitle = models.CharField(max_length=300)
-    tags = models.ManyToManyField(Tag, through='SeriesTag')
-
-    def __str__(self):
-        return self.title
-
-
-class SeriesTag(models.Model):
-    # Series:Tag = 1:ㅡ
-    tag_id = models.ForeignKey(Tag, on_delete=models.CASCADE)
-    series_id = models.ForeignKey(Series, on_delete=models.CASCADE)

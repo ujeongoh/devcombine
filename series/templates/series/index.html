@@ -1,0 +1,19 @@
+{% if main_series %}
+<ul>
+    {% for series in main_series %}
+        <li>
+            {% comment %} <a href = "{% url 'series_course' series.id %}"> {% endcomment %}
+                {{series.title}}
+            {% comment %} </a> {% endcomment %}
+            <ul>
+                {% comment %} {% comment %} {% for course in series.courses.all %}
+                    <li>{{course.title}}</li>
+                    <li>{{course.instructor}}</li>
+                {% endfor %} {% endcomment %} 
+            </ul>
+        </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>no series</p>
+{% endif %}

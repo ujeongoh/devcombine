@@ -1,0 +1,11 @@
+<ul>
+
+    {% for course in series_course %}
+    <h3>{{course.title}}</h3>
+        <li>
+            {{course.instructor}}
+            {{course.price}}
+            {{course.rating}}
+        </li>
+    {%endfor%}
+</ul>
