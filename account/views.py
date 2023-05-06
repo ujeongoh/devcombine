@@ -1,28 +1,17 @@
-from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
+from django.http import JsonResponse
+from django.http import HttpResponseRedirect
 from django.urls import reverse
-from django.shortcuts import render, redirect
-
-from django.contrib.auth import login, logout
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.contrib.auth.models import User
-
+from django.shortcuts import render
+from django.contrib.auth import login
+from django.contrib.auth import logout
+from django.contrib.auth.forms import AuthenticationForm
 from django.views.decorators.csrf import csrf_exempt
 from django.middleware.csrf import get_token
-
-from rest_framework import permissions
-from rest_framework.decorators import api_view, permission_classes
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import RefreshToken
-
 from account.models import UserProfile
-from courses.models import Course, Tag
 from .serializers import MyTokenObtainPairSerializer
 from .forms import CustomUserCreationForm
-
-import csv
-from io import TextIOWrapper
-from datetime import datetime
-from decimal import Decimal, InvalidOperation
 
 # Create your views here.
 
@@ -38,7 +27,6 @@ def get_csrf_token(request):
 def index(request):
     return render(request, 'base_index.html')
 
-
 @csrf_exempt
 def signup_view(request):
     if request.method == 'POST':
@@ -47,9 +35,8 @@ def signup_view(request):
             user = form.save()
             UserProfile.objects.create(user=user)
             login(request, user)
-            return HttpResponseRedirect(reverse('account:index'))
+            return HttpResponseRedirect(reverse('series:main_series'))
         else:
-
             return JsonResponse({'error': 'Invalid request.'}, status=400)
     else:
         form = CustomUserCreationForm()
@@ -65,7 +52,7 @@ def login_view(request):
             login(request, user)
             refresh = RefreshToken.for_user(user)
             access_token = str(refresh.access_token)
-            return HttpResponseRedirect(reverse('account:index'))
+            return HttpResponseRedirect(reverse('series:main_series'))
         else:
             return JsonResponse({'error': 'Invalid credentials.'}, status=401)
     else:
@@ -76,6 +63,6 @@ def login_view(request):
 @csrf_exempt
 def logout_view(request):
     logout(request)
-    return HttpResponseRedirect(reverse('account:index'))
+    return HttpResponseRedirect(reverse('series:main_series'))
 
 
