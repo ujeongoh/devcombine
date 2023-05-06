@@ -38,4 +38,4 @@ class CourseTag(models.Model):
     course_id = models.ForeignKey(Course, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'{self.course_id.title} - {self.tag_id.name}'
+        return f'{self.course_id.title} - {self.tag_id.name}' 
