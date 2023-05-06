@@ -17,8 +17,8 @@
     <div class="pagination">
             <span class="step-links">
                 {% if courses.has_previous %}
-                    <a href="?page=1{% if selected_tags %}&tags={{ selected_tags|join:',' }}{% endif %}">&laquo; 처음</a>
-                    <a href="?page={{ courses.previous_page_number }}{% if selected_tags %}&tags={{ selected_tags|join:',' }}{% endif %}">이전</a>
+                    <a href="?course_page=1&tag_page={{ all_tags.number }}{% if selected_tags %}&tags={{ selected_tags|join:',' }}{% endif %}{% if tag_query %}&tag_query={{ tag_query }}{% endif %}">&laquo; 처음</a>
+                    <a href="?course_page={{ courses.previous_page_number }}&tag_page={{ all_tags.number }}{% if selected_tags %}&tags={{ selected_tags|join:',' }}{% endif %}{% if tag_query %}&tag_query={{ tag_query }}{% endif %}">이전</a>
                 {% endif %}
 
                 <span class="current">
@@ -26,9 +26,10 @@
                 </span>
 
                 {% if courses.has_next %}
-                    <a href="?page={{ courses.next_page_number }}{% if selected_tags %}&tags={{ selected_tags|join:',' }}{% endif %}">다음</a>
-                    <a href="?page={{ courses.paginator.num_pages }}{% if selected_tags %}&tags={{ selected_tags|join:',' }}{% endif %}">마지막 &raquo;</a>
+                    <a href="?course_page={{ courses.next_page_number }}&tag_page={{ all_tags.number }}{% if selected_tags %}&tags={{ selected_tags|join:',' }}{% endif %}{% if tag_query %}&tag_query={{ tag_query }}{% endif %}">다음</a>
+                    <a href="?course_page={{ courses.paginator.num_pages }}&tag_page={{ all_tags.number }}{% if selected_tags %}&tags={{ selected_tags|join:',' }}{% endif %}{% if tag_query %}&tag_query={{ tag_query }}{% endif %}">마지막 &raquo;</a>
                 {% endif %}
+
             </span>
         </div>
 
@@ -94,4 +95,39 @@
             });
         });
     </script>
+{% endblock %}
+{% block sidebar %}
+    <h2>태그 필터</h2>
+    <form method="get">
+        <input type="hidden" name="course_page" value="{{ courses.number }}">
+        <input type="text" name="tag_query" value="{{ tag_query }}" placeholder="태그 검색...">
+        <button type="submit">검색</button>
+    </form>
+    {% for tag in all_tags %}
+        <div>
+            <input type="checkbox" id="{{ tag.id }}" name="tags" value="{{ tag.id }}" {% if tag.id in selected_tags %}checked{% endif %}>
+            <label for="{{ tag.id }}">{{ tag.name }}</label>
+        </div>
+    {% endfor %}
+    <button type="submit">태그로 필터링</button>
+    <div class="pagination">
+        <span class="step-links">
+            {% if all_tags.has_previous %}
+                <a href="?course_page={{ courses.number }}&tag_page=1{% if selected_tags %}&tags={{ selected_tags|join:',' }}{% endif %}{% if tag_query %}&tag_query={{ tag_query }}{% endif %}">&laquo; 처음</a>
+                <a href="?course_page={{ courses.number }}&tag_page={{ all_tags.previous_page_number }}{% if selected_tags %}&tags={{ selected_tags|join:',' }}{% endif %}{% if tag_query %}&tag_query={{ tag_query }}{% endif %}">이전</a>
+            {% endif %}
+
+
+            <span class="current">
+                페이지 {{ all_tags.number }} / {{ all_tags.paginator.num_pages }}.
+            </span>
+
+            {% if all_tags.has_next %}
+                <a href="?course_page={{ courses.number }}&tag_page={{ all_tags.next_page_number }}{% if selected_tags %}&tags={{ selected_tags|join:',' }}{% endif %}{% if tag_query %}&tag_query={{ tag_query }}{% endif %}">다음</a>
+                <a href="?course_page={{ courses.number }}&tag_page={{ all_tags.paginator.num_pages }}{% if selected_tags %}&tags={{ selected_tags|join:',' }}{% endif %}{% if tag_query %}&tag_query={{ tag_query }}{% endif %}">마지막 &raquo;</a>
+            {% endif %}
+
+        </span>
+    </div>
+    <button type="submit">태그로 필터링</button>
 {% endblock %}
