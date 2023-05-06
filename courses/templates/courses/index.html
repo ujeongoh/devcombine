@@ -1,0 +1,16 @@
+{% extends 'base_detail.html' %}
+{% load static %}
+
+{% block content %}
+{% if total_course %}
+    <h1>전체 강의</h1>
+    <ul>
+        {% for course in total_course %}
+            <li>{{ course.title }}</li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>강의가 없습니다.</p>
+{% endif %}
+
+{% endblock %}

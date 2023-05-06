@@ -4,7 +4,10 @@
 <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl " id="navbarBlur" data-scroll="false">
     <div class="container py-1 px-3">
       <div class="col-2">
-        <a href ={% url 'courses:index' %}>
+        <!--
+          # TODO :: 변경 사항 생기면서 수정 작업 필요
+        -->
+        {% comment %} <a href ={% url 'courses:index' %}> {% endcomment %}
         <img src="{% static 'img/logo_blue.png' %}" class="border-radius-xl" width=250 />
       </div>
       <nav aria-label="breadcrumb">

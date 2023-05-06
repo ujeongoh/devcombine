@@ -155,18 +155,3 @@ def check_course_like(request, course_id):
 #     course = Course.objects.get(id=course_id)
 #     count = course.likes.count()
 #     return JsonResponse({'like_count': count})
-
-
-
-
-def upload_csv_view(request):
-    if request.method == 'POST' and request.FILES:
-        csv_file = request.FILES['csv_file']
-        # CSV 파일 처리 코드 작성
-        reader = csv.reader(csv_file)
-        for row in reader:
-            title = row[1]
-            # 각 행에 대한 처리 코드 작성
-        return render(request, 'admin/upload_csv_success.html')
-    else:
-        return render(request, 'admin/upload_csv_form.html')

@@ -25,7 +25,13 @@ class Course(models.Model):
     # upload_date = models.DateField(auto_now_add=False, null=True)
 
     # Course:Tag - N:M
-    tags = models.ManyToManyField(Tag, related_name='course_tags')
+    tags = models.ManyToManyField(Tag, through='CourseTag')
 
     def __str__(self):
         return self.title
+
+
+class CourseTag(models.Model):
+    # Course : Tag - N:M
+    tag_id = models.ForeignKey(Tag, on_delete=models.CASCADE)
+    course_id = models.ForeignKey(Course, on_delete=models.CASCADE)
