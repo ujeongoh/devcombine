@@ -1,16 +1,79 @@
 {% extends 'base_detail.html' %}
 {% load static %}
-
 {% block content %}
 {% if total_course %}
     <h1>전체 강의</h1>
     <ul>
         {% for course in total_course %}
-            <li>{{ course.title }}</li>
+            <li>
+                {{ course.title }}
+                 {% if request.user.is_authenticated %}
+                   <button class="like-button" data-course-id="{{ course.id }}">Like</button>
+                   <span class="like-count" data-course-id="{{ course.id }}">0</span> 명이 좋아요
+                 {% endif %}
+            </li>
         {% endfor %}
     </ul>
 {% else %}
     <p>강의가 없습니다.</p>
 {% endif %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            function updateLikeCount(courseId) {
+                const likeCountUrl = `/courses/${courseId}/likes/count/`;
 
+                $.get(likeCountUrl, (response) => {
+                    $(`.like-count[data-course-id="${courseId}"]`).text(response.like_count);
+                });
+            }
+
+            $('.like-count').each(function() {
+                const courseId = $(this).data('course-id');
+                updateLikeCount(courseId);
+            });
+
+            $('.like-button').on('click', function() {
+                const courseId = $(this).data('course-id');
+                const userId = {{ request.user.id }};
+                const likeUrl = `/courses/${courseId}/likes/`;
+
+                $.ajax({
+                    method: 'POST',
+                    url: `/courses/${courseId}/likes/check/`,
+                    data: { user_id: userId },
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    success: function(response) {
+                        if (response.check === 1) {
+                            $.ajax({
+                                method: 'POST',
+                                url: `/courses/${courseId}/dislikes/`,
+                                data: { user_id: userId },
+                                headers: {
+                                    'X-CSRFToken': '{{ csrf_token }}'
+                                },
+                                success: function() {
+                                    updateLikeCount(courseId);
+                                }
+                            });
+                        } else {
+                            $.ajax({
+                                method: 'POST',
+                                url: likeUrl,
+                                data: { user_id: userId },
+                                headers: {
+                                    'X-CSRFToken': '{{ csrf_token }}'
+                                },
+                                success: function() {
+                                    updateLikeCount(courseId);
+                                }
+                            });
+                        }
+                    }
+                });
+            });
+        });
+    </script>
 {% endblock %}

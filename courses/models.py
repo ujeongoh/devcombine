@@ -22,7 +22,8 @@ class Course(models.Model):
     is_package = models.BooleanField(default=False)
     is_free = models.BooleanField(default=False)
     enrollment_count = models.IntegerField(default=0)
-    # upload_date = models.DateField(auto_now_add=False, null=True)
+    likes = models.ManyToManyField(User, related_name='liked_courses')
+    dislikes = models.ManyToManyField(User, related_name='disliked_courses')
 
     # Course:Tag - N:M
     tags = models.ManyToManyField(Tag, through='CourseTag')

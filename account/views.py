@@ -35,6 +35,9 @@ def get_csrf_token(request):
     token = get_token(request)
     return JsonResponse({'csrf_token': token})
 
+def index(request):
+    return render(request, 'base_index.html')
+
 
 @csrf_exempt
 def signup_view(request):
@@ -44,7 +47,7 @@ def signup_view(request):
             user = form.save()
             UserProfile.objects.create(user=user)
             login(request, user)
-            return HttpResponseRedirect(reverse('courses:index'))
+            return HttpResponseRedirect(reverse('account:index'))
         else:
 
             return JsonResponse({'error': 'Invalid request.'}, status=400)
@@ -62,7 +65,7 @@ def login_view(request):
             login(request, user)
             refresh = RefreshToken.for_user(user)
             access_token = str(refresh.access_token)
-            return HttpResponseRedirect(reverse('courses:index'))
+            return HttpResponseRedirect(reverse('account:index'))
         else:
             return JsonResponse({'error': 'Invalid credentials.'}, status=401)
     else:
@@ -73,85 +76,6 @@ def login_view(request):
 @csrf_exempt
 def logout_view(request):
     logout(request)
-    return HttpResponseRedirect(reverse('courses:index'))
+    return HttpResponseRedirect(reverse('account:index'))
 
 
-@csrf_exempt
-@api_view(['POST'])
-@permission_classes([permissions.IsAuthenticated])
-def like_course(request, course_id):
-    course = Course.objects.get(id=course_id)
-    user_id = request.data.get('user_id')
-    if user_id:
-        user = User.objects.get(id=user_id)
-        course.likes.add(user)
-        course.dislikes.remove(user)
-        return JsonResponse({}, status=201)
-    else:
-        return JsonResponse({'error': 'Invalid request.'}, status=400)
-
-
-@csrf_exempt
-@api_view(['POST'])
-@permission_classes([permissions.IsAuthenticated])
-def dislike_course(request, course_id):
-    course = Course.objects.get(id=course_id)
-    user_id = request.data.get('user_id')
-    if user_id:
-        user = User.objects.get(id=user_id)
-        course.dislikes.add(user)
-        course.likes.remove(user)
-        return JsonResponse({}, status=202)
-    else:
-        return JsonResponse({'error': 'Invalid request.'}, status=400)
-
-
-@csrf_exempt
-@api_view(['POST'])
-@permission_classes([permissions.IsAuthenticated])
-def check_course_like(request, course_id):
-    course = Course.objects.get(id=course_id)
-    user_id = request.data.get('user_id')
-    if user_id:
-        user = User.objects.get(id=user_id)
-        if user in course.likes.all():
-            check = 1
-        else:
-            check = 0
-        return JsonResponse({'check': check})
-    else:
-        return JsonResponse({'error': 'Invalid request.'}, status=400)
-
-
-# TODO 이유는 모르겠지만 빈 wishlist반환됨.
-
-
-# @csrf_exempt
-# @api_view(['POST'])
-# @permission_classes([permissions.IsAuthenticated])
-# def user_wishlist(request):
-#     user_id = request.data.get('user_id')
-#     if user_id:
-#         user = User.objects.get(id=user_id)
-#         interests = user.userprofile.interests.all()
-#         wishlist = []
-#         for interest in interests:
-#             wishlist.append({
-#                 'id': interest.id,
-#                 'courses': {
-#                     'course_id': interest.id,
-#                     'course_name': interest.title,
-#                 }
-#             })
-#         return JsonResponse({'wishlist': wishlist}, status=200)
-#     else:
-#         return JsonResponse({'error': 'Invalid request.'}, status=400)
-
-
-# @csrf_exempt
-# @api_view(['GET'])
-# @permission_classes([permissions.IsAuthenticated])
-# def course_like_count(request, course_id):
-#     course = Course.objects.get(id=course_id)
-#     count = course.likes.count()
-#     return JsonResponse({'like_count': count})
