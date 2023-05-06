@@ -11,7 +11,7 @@ from io import TextIOWrapper
 from datetime import datetime
 from decimal import Decimal, InvalidOperation
 from django.core.paginator import Paginator
-
+from .tag_mapping import tag_mapping
 
 def total_course(request):
     """
@@ -44,6 +44,12 @@ def upload_csv(request):
     Course 리스트 업데이트 함수
     API : POST courses/admin/upload-csv/
     """
+    def get_newtag(tag):
+        if tag in tag_mapping:
+            return tag_mapping[tag]
+        else:
+            return tag
+        
     if request.method == 'POST':
         form = CSVUploadForm(request.POST, request.FILES)
         if form.is_valid():
@@ -71,15 +77,13 @@ def upload_csv(request):
                 except InvalidOperation:
                     rating = Decimal('0.000')
                 thumbnail_url = row[8]
-                is_package = bool(row[9])
-                is_free = bool(row[10])
+                is_package = row[9]
+                is_free = row[10]
                 enrollment_count_str = row[11]
                 if enrollment_count_str == "" or enrollment_count_str == "0.0":
                     enrollment_count = 0
                 else:
                     enrollment_count = int(float(enrollment_count_str))
-
-                upload_date = now
 
                 # Course 모델에 데이터 저장
                 course = Course.objects.create(
@@ -94,10 +98,9 @@ def upload_csv(request):
                     is_package=is_package,
                     is_free=is_free,
                     enrollment_count=enrollment_count,
-                    # upload_date=upload_date,
                 )
                 for tag_name in tags.split(','):
-                    tag, _ = Tag.objects.get_or_create(name=tag_name.strip())
+                    tag, _ = Tag.objects.get_or_create(name=get_newtag(tag_name.strip()))
                     course.tags.add(tag)
 
             return render(request, 'admin/upload_success.html')
