@@ -5,16 +5,15 @@ from django.db.models import Count
 from courses.models import Course
 from series.models import Series
 
-# Create your views here.
-
 
 def main_series(request):
     """
     메인에 노출 시키는 시리즈의 목록만 가져오는 함수
+    - Admin에서 Sries를 지정할 때 is_main = True 로 노출 시킨 값만 필터링 한다.
+    - 
     """
-    main_series = Series.objects.filter(
-        is_main=True)
-    print(main_series)
+    main_series = Series.objects.filter(is_main=True)
+
     context = {
         'main_series': main_series
     }
