@@ -10,33 +10,52 @@ import csv
 from io import TextIOWrapper
 from datetime import datetime
 from decimal import Decimal, InvalidOperation
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .tag_mapping import tag_mapping
 
 def total_course(request):
     """
     전체 코스 조회, 필터링 기능
     """
-    selected_tag_ids = request.GET.getlist('tags')
-    selected_tags = [int(tag_id) for tag_id in selected_tag_ids]
-    if selected_tags:
-        total_course = Course.objects.filter(tags__id__in=selected_tags).distinct()
+    course_page = request.GET.get('course_page', 1)
+    tag_page = request.GET.get('tag_page', 1)
+    tag_query = request.GET.get('tag_query', '')
+
+    selected_tags = request.GET.getlist('tags')
+    selected_tags = [int(tag_id) for tag_id in selected_tags]
+
+    if tag_query:
+        all_tags = Tag.objects.filter(name__icontains=tag_query).order_by('name')
     else:
-        total_course = Course.objects.all()
+        all_tags = Tag.objects.all().order_by('name')
 
-    paginator = Paginator(total_course, 10)
-    page = request.GET.get('page', 1)
-    courses = paginator.get_page(page)
+    courses = Course.objects.filter(tags__in=selected_tags).distinct() if selected_tags else Course.objects.all()
+    courses_paginator = Paginator(courses, 10)
+    tags_paginator = Paginator(all_tags, 10)
 
-    all_tags = Tag.objects.all()[:10] #todo::몇개를 하는게 좋을까요?
+    try:
+        courses = courses_paginator.page(course_page)
+    except PageNotAnInteger:
+        courses = courses_paginator.page(1)
+    except EmptyPage:
+        courses = courses_paginator.page(courses_paginator.num_pages)
+
+    try:
+        all_tags = tags_paginator.page(tag_page)
+    except PageNotAnInteger:
+        all_tags = tags_paginator.page(1)
+    except EmptyPage:
+        all_tags = tags_paginator.page(tags_paginator.num_pages)
 
     context = {
         'courses': courses,
         'all_tags': all_tags,
         'selected_tags': selected_tags,
+        'tag_query': tag_query,
     }
 
     return render(request, 'courses/index.html', context)
+
 
 
 def upload_csv(request):
