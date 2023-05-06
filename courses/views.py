@@ -10,6 +10,7 @@ import csv
 from io import TextIOWrapper
 from datetime import datetime
 from decimal import Decimal, InvalidOperation
+from django.core.paginator import Paginator
 
 
 def total_course(request):
@@ -23,10 +24,14 @@ def total_course(request):
     else:
         total_course = Course.objects.all()
 
+    paginator = Paginator(total_course, 10)
+    page = request.GET.get('page', 1)
+    courses = paginator.get_page(page)
+
     all_tags = Tag.objects.all()[:10] #todo::몇개를 하는게 좋을까요?
 
     context = {
-        'total_course': total_course,
+        'courses': courses,
         'all_tags': all_tags,
         'selected_tags': selected_tags,
     }
