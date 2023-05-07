@@ -44,6 +44,7 @@ class SereisCourseListView(ListView):
 
         context = {
             'series': series,
+            'series_tags': series_tags,
             'matching_courses': matching_courses,
         }
 
