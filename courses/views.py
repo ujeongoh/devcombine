@@ -23,13 +23,14 @@ def total_course(request):
 
     selected_tags = request.GET.getlist('tags')
     selected_tags = [int(tag_id) for tag_id in selected_tags]
-
+    selected_tags_name = Tag.objects.filter(id__in=selected_tags).order_by('name')
     if tag_query:
         all_tags = Tag.objects.filter(name__icontains=tag_query).order_by('name')
     else:
         all_tags = Tag.objects.all().order_by('name')
 
     courses = Course.objects.filter(tags__in=selected_tags).distinct() if selected_tags else Course.objects.all()
+
     courses_paginator = Paginator(courses, 12)
     tags_paginator = Paginator(all_tags, 12)
 
@@ -40,21 +41,22 @@ def total_course(request):
     except EmptyPage:
         courses = courses_paginator.page(courses_paginator.num_pages)
 
-    try:
-        all_tags = tags_paginator.page(tag_page)
-    except PageNotAnInteger:
-        all_tags = tags_paginator.page(1)
-    except EmptyPage:
-        all_tags = tags_paginator.page(tags_paginator.num_pages)
+    # try:
+    #     all_tags = tags_paginator.page(tag_page)
+    # except PageNotAnInteger:
+    #     all_tags = tags_paginator.page(1)
+    # except EmptyPage:
+    #     all_tags = tags_paginator.page(tags_paginator.num_pages)
 
     context = {
         'courses': courses,
         'all_tags': all_tags,
         'selected_tags': selected_tags,
+        'selected_tags_name': selected_tags_name,
         'tag_query': tag_query,
     }
 
-    return render(request, 'courses/index copy.html', context)
+    return render(request, 'courses/index.html', context)
 
 
 
