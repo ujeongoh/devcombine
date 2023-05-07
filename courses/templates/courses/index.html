@@ -46,7 +46,7 @@
                     </a>
                     {% if request.user.is_authenticated %}
                     <button class="like-button" data-course-id="{{ course.id }}" style="border: 0; background-color: pink; border-radius:30px; color: white">Like</button>
-                    <span class="like-count" data-course-id="{{ course.id }}">0</span> 명이 좋아요
+                    <span id="like-count-{{ course.id }}" class="like-count" data-course-id="{{ course.id }}">0</span> 명이 좋아요
                     {% endif %}
                 </div>
             </div>
@@ -146,7 +146,7 @@
                     success: function(response) {
                         if (response.check === 1) {
                             $.ajax({
-                                method: 'POST
+                                method: 'POST',
                                 url: `/courses/${courseId}/dislikes/`,
                                 data: { user_id: userId },
                                 headers: {
