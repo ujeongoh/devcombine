@@ -63,7 +63,7 @@
             {% endif %} {% endcomment %}
 
             <span class="current">
-                {{ courses.number }} / {{ courses.paginator.num_pages }}.
+                {{ courses.number }} / {{ courses.paginator.num_pages }}
             </span>
 
             {% comment %} {% if courses.has_next %}
@@ -175,6 +175,7 @@
         });
     </script>
 {% endblock %}
+
 {% block sidebar %}
     <h2>태그 필터</h2>
     <form method="get" id="tag_filter_form">
