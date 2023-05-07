@@ -13,7 +13,9 @@
                 <button type="button" class="btn btn-primary rounded-pill me-2 btn-sm">{{tag.name}}</button>
                 {% endfor %} 
             </div> 
+            <p style= "padding: 10px 0 0 10px"><b>{{series.subtitle}}</b></p>
         </div>
+        
         <div class="row">
             {% for course in series.courses %}
                 {% if forloop.counter <= 8 %}
