@@ -1,11 +1,15 @@
 <ul>
-
+    {% for tag in series_tags%}    
+    {{tag}}
+    {% endfor %}
     {% for course in matching_courses %}
+    
     <h3>{{course.title}}</h3>
         <li>
             {{course.instructor}}
             {{course.price}}
             {{course.rating}}
+            
         </li>
     {%endfor%}
 </ul>
