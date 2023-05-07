@@ -45,7 +45,7 @@ class SereisCourseListView(ListView):
 
         # Series의 Course에서, paging 처리 => series_courses
         page = request.GET.get('page', 1)
-        series_courses_pagenator = Paginator(series_courses, 12)
+        series_courses_pagenator = Paginator(series_courses, 20)
         page_obj = series_courses_pagenator.page(page)
 
         try:
