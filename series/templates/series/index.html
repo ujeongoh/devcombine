@@ -13,10 +13,12 @@
                 
             {% comment %} </a> {% endcomment %}
             <ul>
-                {% comment %} {% comment %} {% for course in series.courses.all %}
-                    <li>{{course.title}}</li>
-                    <li>{{course.instructor}}</li>
-                {% endfor %} {% endcomment %} 
+                {% for course in series.courses %}
+                    {% if forloop.counter <= 8 %}
+                        <li>{{course.title}}</li>
+                        {{course.instructor}}
+                    {% endif %}
+                {% endfor %}
             </ul>
         </li>
     {% endfor %}
