@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.db.models import Count
 from django.views.generic import ListView
 from django.db.models.functions import Random
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 from courses.models import Course
@@ -38,17 +39,28 @@ class SereisCourseListView(ListView):
         series = Series.objects.get(id=series_id)
         series_tags = series.tags.all()        # series에 들어있는 태그를 모두 가져온다.
 
-        # 일치하는 Course 찾기
-        matching_courses = Course.objects.filter(
+        # Series의 Course 찾기
+        series_courses = Course.objects.filter(
             tags__in=series_tags).distinct()
+
+        # Series의 Course에서, paging 처리 => series_courses
+        page = request.GET.get('page', 1)
+        series_courses_pagenator = Paginator(series_courses, 12)
+        page_obj = series_courses_pagenator.page(page)
+
+        try:
+            series_courses = series_courses_pagenator.page(page)
+        except PageNotAnInteger:
+            series_courses = series_courses_pagenator.page(1)
+        except EmptyPage:
+            series_courses = series_courses.page(
+                series_courses_pagenator.num_pages)
 
         context = {
             'series': series,
             'series_tags': series_tags,
-            'matching_courses': matching_courses,
+            'series_courses': series_courses,
         }
-
-        # TODO :: context 에 Pagenator 설정 필요
 
         return render(request, 'series/series_course.html', context)
 
