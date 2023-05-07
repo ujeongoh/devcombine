@@ -3,7 +3,7 @@ from .forms import CSVUploadForm
 from django.shortcuts import render, redirect
 from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
-from .models import Course, Tag
+from .models import Course, Tag, Category
 from rest_framework import permissions
 from rest_framework.decorators import api_view, permission_classes
 import csv
@@ -32,6 +32,7 @@ def total_course(request):
         all_tags = Tag.objects.all().order_by('name')
 
     courses = Course.objects.filter(tags__in=selected_tags).distinct() if selected_tags else Course.objects.all()
+    categories = Category.objects.all()
 
     courses_paginator = Paginator(courses, 12)
     tags_paginator = Paginator(all_tags, 12)
@@ -56,6 +57,7 @@ def total_course(request):
         'selected_tags': selected_tags,
         'selected_tags_name': selected_tags_name,
         'tag_query': tag_query,
+        'categories':categories,
     }
 
     return render(request, 'courses/index.html', context)
