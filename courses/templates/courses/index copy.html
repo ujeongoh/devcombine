@@ -46,42 +46,61 @@
         {% endfor %}
         </div>
     </div>
-    
-    <div class="paginationn" style="text-align: center;">
+    <div class="paginationn" style="text-align: center">
         <span class="step-links">
-            {% if courses.has_previous %}
-                <a href="?page=1{% if selected_tags %}&tags={{ selected_tags|join:',' }}{% endif %}">&laquo; 처음</a>
-                <a href="?page={{ courses.previous_page_number }}{% if selected_tags %}&tags={{ selected_tags|join:',' }}{% endif %}">이전</a>
-            {% endif %}
+            {% comment %} {% if courses.has_previous %}
+                <a href="?course_page=1&tag_page={{ all_tags.number }}{% if selected_tags %}&tags={{ selected_tags|join:',' }}{% endif %}{% if tag_query %}&tag_query={{ tag_query }}{% endif %}">&laquo; 처음</a>
+                <a href="?course_page={{ courses.previous_page_number }}&tag_page={{ all_tags.number }}{% if selected_tags %}&tags={{ selected_tags|join:',' }}{% endif %}{% if tag_query %}&tag_query={{ tag_query }}{% endif %}">이전</a>
+            {% endif %} {% endcomment %}
 
             <span class="current">
-                페이지 {{ courses.number }} / {{ courses.paginator.num_pages }}.
+                {{ courses.number }} / {{ courses.paginator.num_pages }}.
             </span>
 
-            {% if courses.has_next %}
-                <a href="?page={{ courses.next_page_number }}{% if selected_tags %}&tags={{ selected_tags|join:',' }}{% endif %}">다음</a>
-                <a href="?page={{ courses.paginator.num_pages }}{% if selected_tags %}&tags={{ selected_tags|join:',' }}{% endif %}">마지막 &raquo;</a>
-            {% endif %}
+            {% comment %} {% if courses.has_next %}
+                <a href="?course_page={{ courses.next_page_number }}&tag_page={{ all_tags.number }}{% if selected_tags %}&tags={{ selected_tags|join:',' }}{% endif %}{% if tag_query %}&tag_query={{ tag_query }}{% endif %}">다음</a>
+                <a href="?course_page={{ courses.paginator.num_pages }}&tag_page={{ all_tags.number }}{% if selected_tags %}&tags={{ selected_tags|join:',' }}{% endif %}{% if tag_query %}&tag_query={{ tag_query }}{% endif %}">마지막 &raquo;</a>
+            {% endif %} {% endcomment %}
         </span>
     </div>
 
     <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center">
-          <li class="page-item disabled">
-            <a class="page-link" href="javascript:;" tabindex="-1">
+        {% if courses.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="?course_page=1&tag_page={{ all_tags.number }}{% if selected_tags %}&tags={{ selected_tags|join:',' }}{% endif %}{% if tag_query %}&tag_query={{ tag_query }}{% endif %}" aria-label="Previous">
+              <span aria-hidden="true"><i class="fa fa-angle-double-left" aria-hidden="true"></i></span>
+            </a>
+          </li>
+          <li class="page-item">
+            <a class="page-link" href="?course_page={{ courses.previous_page_number }}&tag_page={{ all_tags.number }}{% if selected_tags %}&tags={{ selected_tags|join:',' }}{% endif %}{% if tag_query %}&tag_query={{ tag_query }}{% endif %}" tabindex="-1">
               <i class="fa fa-angle-left"></i>
               <span class="sr-only">Previous</span>
             </a>
           </li>
-          <li class="page-item"><a class="page-link" href="javascript:;">1</a></li>
-          <li class="page-item active"><a class="page-link" href="javascript:;">2</a></li>
-          <li class="page-item"><a class="page-link" href="javascript:;">3</a></li>
-          <li class="page-item">
-            <a class="page-link" href="javascript:;">
-              <i class="fa fa-angle-right"></i>
-              <span class="sr-only">Next</span>
-            </a>
-          </li>
+        {% endif %}
+
+          {% comment %} {% for page in courses.paginator.page_range %}
+          {% if page == courses.paginator.num_pages%}
+          <li class="page-item active"><a class="page-link" href={{courses.course_page}}>{{courses.number}}</a></li>
+          {% else %}
+          <li class="page-item"><a class="page-link" href=?course_page={{ course_page }}&tag_page={{ all_tags.number }}{% if selected_tags %}&tags={{ selected_tags|join:',' }}{% endif %}{% if tag_query %}&tag_query={{ tag_query }}{% endif %}></a></li>
+          {% endif%}
+          {% endfor%} {% endcomment %}
+
+        {% if courses.has_next %}
+        <li class="page-item">
+        <a class="page-link" href="?course_page={{ courses.next_page_number }}&tag_page={{ all_tags.number }}{% if selected_tags %}&tags={{ selected_tags|join:',' }}{% endif %}{% if tag_query %}&tag_query={{ tag_query }}{% endif %}">
+            <i class="fa fa-angle-right"></i>
+            <span class="sr-only">Next</span>
+        </a>
+        </li>
+        <li class="page-item">
+        <a class="page-link" href="?course_page={{ courses.paginator.num_pages }}&tag_page={{ all_tags.number }}{% if selected_tags %}&tags={{ selected_tags|join:',' }}{% endif %}{% if tag_query %}&tag_query={{ tag_query }}{% endif %}" aria-label="Next">
+            <span aria-hidden="true"><i class="fa fa-angle-double-right" aria-hidden="true"></i></span>
+        </a>
+        </li>
+        {% endif %}
         </ul>
       </nav>
 
