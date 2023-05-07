@@ -9,10 +9,11 @@
         <div style="padding-bottom: 40px">
             <h1 style="display: inline">{{series.title}}</h1>
             <div class="btngr" role="group" style="display: inline; padding-left: 50px">
-                <button type="button" class="btn btn-primary rounded-pill me-2 btn-sm">{{series.tags}}</button>
-                <button type="button" class="btn btn-primary rounded-pill me-2 btn-sm">django</button>
-                <button type="button" class="btn btn-primary rounded-pill btn-sm">easy</button>
-            </div>
+                {% for tag in series.tags.all %}
+                <button type="button" class="btn btn-primary rounded-pill me-2 btn-sm">{{tag.name}}</button>
+                {% endfor %} 
+            </div> 
+            
         </div>
         <div class="row">
             {% for course in series.courses %}
