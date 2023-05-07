@@ -48,3 +48,17 @@ class CourseTag(models.Model):
 
     def __str__(self):
         return f'{self.course_id.title} - {self.tag_id.name}' 
+    
+class Category(models.Model):
+    name = models.CharField(max_length=100)
+    tags = models.ManyToManyField(Tag, through='CategoryTag')
+
+    def __str__(self):
+        return self.name 
+    
+class CategoryTag(models.Model):
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.category.name} - {self.tag.name}' 
