@@ -1,23 +1,34 @@
 {% load static %}
 <div class="min-height-100 bg-primary position-absolute w-100"></div>
     <aside class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4 " id="sidenav-main">
-
-        <div class="filter" style="text-align:center; padding:50px">
-            <h3>Tags</h3>
+<form method="get" action="{% url 'courses:total_course' %}">
+    <input type="text" name="tag_query" value="{{ tag_query }}" placeholder="태그 검색...">
+    <button type="submit">검색</button>
+    {% for tag in all_tags %}
+        <div class="form-check" style="margin-left: 30px">
+            <input class="form-check-input" type="checkbox" name="tags" value="{{ tag.id }}" id="tag{{ tag.id }}" {% if tag.id in selected_tags %}checked{% endif %}>
+            <label class="custom-control-label" for="tag{{ tag.id }}">{{ tag.name }}</label>
         </div>
-            <form method="get" action="{% url 'courses:total_course' %}">
-                {% for tag in all_tags %}
-                    <div class="form-check" style="margin-left: 30px">
-                        <input class="form-check-input" type="checkbox" name="tags" value="{{ tag.id }}" id="tag{{ tag.id }}" {% if tag.id in selected_tags %}checked{% endif %}>
-                        <label class="custom-control-label" for="tag{{ tag.id }}">{{ tag.name }}</label>
-                    </div>
-                {% endfor %}
-            <div style="text-align:center; margin: 20px">
-                <button type="submit" class="btn btn-primary">필터 적용</button>
-            </div>
-            </form>
-            
+    {% endfor %}
+    <button type="submit" class="btn btn-primary">필터 적용</button>
+<div class="pagination">
+    <span class="step-links">
+        {% if all_tags.has_previous %}
+            <a href="?course_page={{ courses.number }}&tag_page=1{% if selected_tags %}&tags={{ selected_tags|join:',' }}{% endif %}{% if tag_query %}&tag_query={{ tag_query }}{% endif %}">&laquo; 처음</a>
+            <a href="?course_page={{ courses.number }}&tag_page={{ all_tags.previous_page_number }}{% if selected_tags %}&tags={{ selected_tags|join:',' }}{% endif %}{% if tag_query %}&tag_query={{ tag_query }}{% endif %}">이전</a>
+        {% endif %}
 
-        
+        <span class="current">
+            페이지 {{ all_tags.number }} / {{ all_tags.paginator.num_pages }}.
+        </span>
 
+        {% if all_tags.has_next %}
+            <a href="?course_page={{ courses.number }}&tag_page={{ all_tags.next_page_number }}{% if selected_tags %}&tags={{ selected_tags|join:',' }}{% endif %}{% if tag_query %}&tag_query={{ tag_query }}{% endif %}">다음</a>
+            <a href="?course_page={{ courses.number }}&tag_page={{ all_tags.paginator.num_pages }}{% if selected_tags %}&tags={{ selected_tags|join:',' }}{% endif %}{% if tag_query %}&tag_query={{ tag_query }}{% endif %}">마지막 &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+
+</form>
+>>>>>>> 2d9ca431632ba7d7fa4f9b07ec232f03a87d0668
     </aside>
