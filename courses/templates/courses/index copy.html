@@ -53,7 +53,6 @@
         {% endfor %}
         </div>
     </div>
-    
     <div class="paginationn" style="text-align: center">
         <span class="step-links">
             {% comment %} {% if courses.has_previous %}
@@ -69,7 +68,6 @@
                 <a href="?course_page={{ courses.next_page_number }}&tag_page={{ all_tags.number }}{% if selected_tags %}&tags={{ selected_tags|join:',' }}{% endif %}{% if tag_query %}&tag_query={{ tag_query }}{% endif %}">다음</a>
                 <a href="?course_page={{ courses.paginator.num_pages }}&tag_page={{ all_tags.number }}{% if selected_tags %}&tags={{ selected_tags|join:',' }}{% endif %}{% if tag_query %}&tag_query={{ tag_query }}{% endif %}">마지막 &raquo;</a>
             {% endif %} {% endcomment %}
-
         </span>
     </div>
 
