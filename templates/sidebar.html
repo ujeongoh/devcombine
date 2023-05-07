@@ -5,8 +5,8 @@
             <h3>Tags</h3>
         </div>
             <form method="get" action="{% url 'courses:total_course' %}">
-                <input type="text" name="tag_query" value="{{ tag_query }}" placeholder="태그 검색...">
-                <button type="submit">검색</button>
+              <!--  <input type="text" name="tag_query" value="{{ tag_query }}" placeholder="태그 검색..."> -->
+               <!--  <button type="submit">검색</button> -->
                 {% for category in categories %}
                     <h6 style="padding:10px 20px">
                         {{category.name}}
