@@ -30,8 +30,9 @@ def total_course(request):
         all_tags = Tag.objects.all().order_by('name')
 
     courses = Course.objects.filter(tags__in=selected_tags).distinct() if selected_tags else Course.objects.all()
-    courses_paginator = Paginator(courses, 10)
-    # tags_paginator = Paginator(all_tags, 10)
+
+    courses_paginator = Paginator(courses, 12)
+    tags_paginator = Paginator(all_tags, 12)
 
     try:
         courses = courses_paginator.page(course_page)
