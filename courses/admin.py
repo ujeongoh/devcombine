@@ -33,4 +33,5 @@ class CategoryTagInline(admin.TabularInline):
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     inlines = [CategoryTagInline]
+    change_list_template = 'admin/category/category_change_list.html'
     # search_fields = ['tag']

@@ -92,21 +92,26 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
+    #sqlite3
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    },
+
+    # mysql - local
+    #'default': secrets['REMOTE_DB'],
+
+    # Elastic Beanstalk -> 환경변수로 DB_PASSWORD 저장해서 쓰면됨
+    # AWS CLI에 aws elasticbeanstalk create-environment --application-name your-application-name --environment-name your-environment-name --solution-stack-name "64bit Amazon Linux 2 v5.2.5 running Python 3.9" --option-settings Namespace=aws:elasticbeanstalk:application:environment,OptionName=DB_PASSWORD,Value=your-database-password
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'NAME': 'your-database-name',
+    #     'USER': 'your-database-username',
+    #     'PASSWORD': os.environ['DB_PASSWORD'],
+    #     'HOST': 'your-database-host',
+    #     'PORT': 'your-database-port',
+    # }
 }
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'DE',
-#         'USER': 'root',
-#         'PASSWORD': '1234',
-#         'HOST': 'localhost',
-#         'PORT': '3306',
-#     }
-# }
 
 
 # Password validation
