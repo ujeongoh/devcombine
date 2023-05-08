@@ -10,5 +10,6 @@ urlpatterns = [
     path('<int:course_id>/likes/', views.like_course, name='like_course'),
     path('<int:course_id>/dislikes/', views.dislike_course, name='dislike_course'),
     path('<int:course_id>/likes/check/', views.check_course_like, name='check_course_like'),
-    path('<int:course_id>/likes/count/', views.course_like_count, name='course_like_count')
+    path('<int:course_id>/likes/count/', views.course_like_count, name='course_like_count'),
+    path('admin/upload-csv-category/', views.upload_csv_category, name='upload_csv_category'),
 ]

@@ -13,6 +13,7 @@ from decimal import Decimal, InvalidOperation
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .tag_mapping import tag_mapping
 
+
 def total_course(request):
     """
     전체 코스 조회, 필터링 기능
@@ -57,11 +58,10 @@ def total_course(request):
         'selected_tags': selected_tags,
         'selected_tags_name': selected_tags_name,
         'tag_query': tag_query,
-        'categories':categories,
+        'categories': categories,
     }
 
     return render(request, 'courses/index.html', context)
-
 
 
 def upload_csv(request):
@@ -69,12 +69,13 @@ def upload_csv(request):
     Course 리스트 업데이트 함수
     API : POST courses/admin/upload-csv/
     """
+
     def get_newtag(tag):
         if tag in tag_mapping:
             return tag_mapping[tag]
         else:
             return tag
-        
+
     if request.method == 'POST':
         form = CSVUploadForm(request.POST, request.FILES)
         if form.is_valid():
@@ -213,3 +214,28 @@ def course_like_count(request, course_id):
     course = Course.objects.get(id=course_id)
     count = course.likes.count()
     return JsonResponse({'like_count': count})
+
+
+def upload_csv_category(request):
+    if request.method == 'POST':
+        form = CSVUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            # CSV 파일을 읽기 모드로 열기
+            csv_file = TextIOWrapper(
+                request.FILES['csv_file'].file, encoding='utf-8')
+            # CSV 파일 파싱하여 Course 모델에 저장
+            reader = csv.reader(csv_file)
+            next(reader)  # CSV 헤더를 건너뛰기
+            for row in reader:
+                name = row[0]
+                tags = row[1]
+                category = Category.objects.create(
+                    name=name,
+                )
+                for tag_name in tags.split(','):
+                    tag, _ = Tag.objects.get_or_create(name=tag_name.strip())
+                    category.tags.add(tag)
+            return render(request, 'admin/upload_success.html')
+    else:
+        form = CSVUploadForm()
+    return render(request, 'admin/upload.html', {'form': form})
