@@ -39,7 +39,7 @@ SECRET_KEY = get_secret("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['.us-east-2.compute.amazonaws.com']
+ALLOWED_HOSTS = ['.us-east-2.compute.amazonaws.com', '127.0.0.1']
 
 
 # Application definition
@@ -93,7 +93,11 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     # mysql - local
-    'default': secrets['REMOTE_DB'],
+    # 'default': secrets['REMOTE_DB'],
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
 
 
