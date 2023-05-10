@@ -16,7 +16,7 @@ import time
 import glob
 import pandas as pd
 import numpy as np
-from tag_mapping import tag_mapping
+from courses.tag_mapping import tag_mapping
 from decimal import Decimal, InvalidOperation
 
 def timed_function(func):
@@ -269,24 +269,24 @@ def programmers_crawl():
                 course_btn.click()
                 driver.implicitly_wait(3)
                 
-                # 수강생 수
-                enrollment_count = None
-                ul = driver.find_element(By.XPATH, '//*[@id="overview-fixed-menu"]/div/ul')
-                for li in ul.find_elements(By.TAG_NAME, "li"):
-                    if '명' in li.text:
-                        enrollment_count = int(li.text[:li.text.index('명')].replace(',', ''))
-                        break
-                # 강사
-                try:
-                    instructor = driver.find_element(By.CLASS_NAME, "name").text
-                except NoSuchElementException:
-                    instructor = None
+                # # 수강생 수
+                # enrollment_count = None
+                # ul = driver.find_element(By.XPATH, '//*[@id="overview-fixed-menu"]/div/ul')
+                # for li in ul.find_elements(By.TAG_NAME, "li"):
+                #     if '명' in li.text:
+                #         enrollment_count = int(li.text[:li.text.index('명')].replace(',', ''))
+                #         break
+                # # 강사
+                # try:
+                #     instructor = driver.find_element(By.CLASS_NAME, "name").text
+                # except NoSuchElementException:
+                #     instructor = None
                 
-                if not instructor:
-                    try:
-                        instructor = driver.find_element(By.CLASS_NAME, "mentor-name").text
-                    except NoSuchElementException:
-                        instructor = None
+                # if not instructor:
+                #     try:
+                #         instructor = driver.find_element(By.CLASS_NAME, "mentor-name").text
+                #     except NoSuchElementException:
+                #         instructor = None
                 
                 # 사이트 태그 추가
                 courses[title].add('프로그래머스')
