@@ -19,10 +19,20 @@ import numpy as np
 from tag_mapping import tag_mapping
 from decimal import Decimal, InvalidOperation
 
+def timed_function(func):
+    def wrapper(*args, **kwargs):
+        start_time = time.time()
+        result = func(*args, **kwargs)
+        end_time = time.time()
+        print(f"Function {func.__name__} took {(end_time - start_time):.6f} seconds to execute.")
+        return result
+    return wrapper
+
 now = datetime.now().date()
 header = ['site','title', 'instructor', 'description', 'url', 'price', 'tags', 'rating', 'thumbnail_url', 'is_package', 'is_free', 'enrollment_count']
 
 # 구름에듀
+@timed_function
 def goorm_crawl():  
     ORIGIN_PATH = 'https://edu.goorm.io'
 
@@ -130,6 +140,7 @@ def goorm_crawl():
     f.close()  # 파일 종료
 
 # 프로그래머스
+@timed_function
 def programmers_crawl():
     '''
     # 프로그래머스 크롤링
@@ -311,6 +322,7 @@ def programmers_crawl():
     print('------프로그래머스 - 저장이 완료되었습니다.------')
 
 # 인프런
+@timed_function
 def inflearn_crawl():
     Delay=2.5
 
@@ -329,7 +341,7 @@ def inflearn_crawl():
     course_price = []
     course_is_free = []
 
-    for page in range(1, 5): 
+    for page in range(1, 58): 
         with webdriver.Chrome(service=Service(ChromeDriverManager().install())) as driver:
             driver.get("https://www.inflearn.com/courses/it-programming?order=seq&page="+str(page))
 
@@ -389,6 +401,7 @@ def inflearn_crawl():
 
     print('------인프런 - 저장이 완료되었습니다.------') 
 
+@timed_function
 def save_dataframe(df):
 
     def get_newtag(tag):
@@ -440,12 +453,12 @@ def save_dataframe(df):
         for tag_name in tags.split(','):
             tag, _ = Tag.objects.get_or_create(name=get_newtag(tag_name.strip()))
             course.tags.add(tag)
-
-
+            
+@timed_function
 def main():
     # 크롤링하여 result폴더에 결과파일 저장
-    # goorm_crawl()
-    # programmers_crawl()
+    goorm_crawl()
+    programmers_crawl()
     inflearn_crawl()
 
     # result 폴더에 있는 파일 읽으면서 데이터 저장
@@ -453,10 +466,12 @@ def main():
     data = []
     files = glob.glob(path)
 
+    # 기존 강의 삭제
+    Course.objects.all().delete()
     for file in files:
         # 각 파일의 헤더 행을 지정하여 파일을 읽어옵니다.
         df = pd.read_csv(file)  # 헤더가 없는 경우
-        df['tags'] = df['tags'].fillna('')
+        df.fillna('', inplace=True)
         data.append(df)
         save_dataframe(df)
     
